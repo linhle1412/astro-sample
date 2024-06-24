@@ -1,0 +1,34 @@
+---
+import BlogCard from "../../components/BlogCard.astro";
+import BlogCardReact from "../../components/BlogCardReact.tsx";
+
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf()
+);
+---
+
+<Layout title="Blog">
+  <section class="container">
+    <div class="text-center py-32">
+      <h1 class="text-4xl font-bold">Welcome to our blogs</h1>
+      <input
+        class="h-10 mt-5 min-w-[500px] px-5 rounded-lg bg-gray-100 focus-visible:outline-primary"
+        placeholder="Search by keyworks..."
+      />
+    </div>
+    <div>
+      <BlogCard isHighlight post={posts[0]} />
+      <div class="grid grid-cols-3 gap-16 my-16">
+        {posts.slice(0, 3).map((post) => <BlogCard post={post} />)}
+      </div>
+    </div>
+    <div class="my-5 mt-[80px] text-xl font-medium">All blogs</div>
+    <div class="grid grid-cols-3 gap-16">
+      <!-- {posts.map((post) => <BlogCard post={post} />)} -->
+      {posts.map((post) => <BlogCardReact post={post} client:only="react" />)}
+    </div>
+  </section>
+</Layout>

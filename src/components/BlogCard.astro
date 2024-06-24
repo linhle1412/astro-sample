@@ -1,0 +1,50 @@
+---
+import FormattedDate from "./FormattedDate.astro";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+  isHighlight?: boolean;
+}
+
+const { post, isHighlight } = Astro.props;
+
+const author = await getEntry(post.data.author);
+---
+
+<a
+  href={`/blog/${post.slug}/`}
+  class:list={[
+    {
+      "grid grid-cols-2 gap-12 items-center": isHighlight
+    }
+  ]}
+>
+  <img
+    width={720}
+    height={360}
+    class="rounded-xl"
+    src={post.data.featureImage}
+    alt=""
+  />
+  <div>
+    <h4
+      class:list={[
+        "font-medium text-gray-700 my-3",
+        {
+          "text-3xl": isHighlight,
+          "text-xl": !isHighlight
+        }
+      ]}
+    >
+      {post.data.title}
+    </h4>
+    <h5 class="text-gray-500 font-normal text-sm">{post.data.description}</h5>
+    <div class="text-gray-500 mt-3 flex items-center gap-3 text-sm">
+      <img src={author.data.avatar} class="rounded-full w-8" alt="" />
+      <span class="font-medium">{author.data.name}</span>•
+      <FormattedDate date={post.data.pubDate} />
+    </div>
+  </div>
+</a>
